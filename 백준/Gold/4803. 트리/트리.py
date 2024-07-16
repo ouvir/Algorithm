@@ -23,28 +23,26 @@ while True:
         break
 
     parent = [0] * (N+1)
-    cycle_set = set()
-    edges = []
+    cycle = []
     for i in range(1,N+1):
         parent[i] = i
 
     for _ in range(M):
         a, b = map(int, input().split())
         if find_parent(parent, a) == find_parent(parent, b):
-            cycle_set.add(parent[a])
-        
-        # 두 노드 중 한쪽이 사이클에 연결 되어있으면
-        # 두 노드 다 사이클에 연결 된 것으로 간주
-        if parent[a] in cycle_set or parent[b] in cycle_set:
-            cycle_set.add(parent[a])
-            cycle_set.add(parent[b])
-        
-        union_parent(parent, a, b)
+            cycle.append(a)
+        else:
+            union_parent(parent, a, b)
 
-    for i in range(1,N+1):
+    # 모두 루트 노드 갱신
+    for i in range(N+1):
         find_parent(parent, i)
 
-    count_set = sum([1 if i not in cycle_set else 0 for i in set(parent[1:])])
+    cycle_set = set()
+    for e in cycle:
+        cycle_set.add(parent[e])
+
+    count_set = len(set(parent[1:]) - cycle_set)
     word = ""
     if count_set == 0:
         word = "No trees."
