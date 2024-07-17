@@ -6,7 +6,7 @@ N, M = map(int, input().split())
 
 trees = list(map(int,input().split()))
 start = 0
-end = max(trees)
+end = 1000000000
 
 result = 0
 while start <= end:
