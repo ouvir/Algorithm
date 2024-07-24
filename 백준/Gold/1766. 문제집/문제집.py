@@ -10,7 +10,7 @@ indegree = [0] * (N+1)
 
 for _ in range(M):
     a, b = map(int, input().split())
-    heapq.heappush(graph[a], b)
+    graph[a].append(b)
     indegree[b] += 1
 
 def topology_sort():
@@ -25,8 +25,7 @@ def topology_sort():
         now = heapq.heappop(q)
         output.append(now)
 
-        while graph[now]:
-            e = heapq.heappop(graph[now])
+        for e in graph[now]:
             indegree[e] -= 1
             if indegree[e] == 0:
                 heapq.heappush(q,e)
