@@ -5,7 +5,9 @@ INF = int(1e9)
 
 tc = int(input())
 
-def bf(distance, edges, V, E):
+def bf(start, distance, edges, V, E):
+    distance[start] = 0
+
     for i in range(V):
         for j in range(E):
             a, b, c = edges[j]
@@ -31,7 +33,8 @@ for _ in range(tc):
         a, b, c = map(int,input().split())
         edges.append((a,b,-c))
 
-    if bf(distance, edges, N, len(edges)):
+
+    if bf(1, distance, edges, N, len(edges)):
         print("YES")
     else:
         print("NO")
