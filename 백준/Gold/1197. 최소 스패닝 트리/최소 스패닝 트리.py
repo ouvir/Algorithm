@@ -1,38 +1,38 @@
 import sys
-
 input = sys.stdin.readline
-
-def find_parent(parent, x):
+def find(parent, x):
     if parent[x] != x:
-        parent[x] = find_parent(parent, parent[x])
+        parent[x] = find(parent, parent[x])
     return parent[x]
 
-def union_parent(parent, a, b):
-    a = find_parent(parent, a)
-    b = find_parent(parent, b)
-
+def union(parent, a, b):
+    a = find(parent, a)
+    b = find(parent, b)
     if a < b:
         parent[b] = a
     else:
         parent[a] = b
 
-v, e = map(int, input().split())
 
-parent = [ i for i in range(v+1)]
+V, E = map(int, input().split())
 edges = []
+parent = [i for i in range(V+1)]
 
-for _ in range(e):
+for _ in range(E):
     a, b, c = map(int, input().split())
-    edges.append((c,a,b))
+    edges.append((a, b, c))
 
-edges.sort()
+edges.sort(key=lambda x: x[2])
 
 result = 0
+count = 0
 for edge in edges:
-    c, a, b = edge
-    if find_parent(parent, a) != find_parent(parent, b):
-        union_parent(parent, a, b)
+    a, b, c = edge
+    if find(parent, a) != find(parent, b):
         result += c
+        count += 1
+        union(parent, a, b)
+        if count == V-1:
+            break
 
 print(result)
-
