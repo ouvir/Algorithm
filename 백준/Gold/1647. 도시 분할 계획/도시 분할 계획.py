@@ -20,16 +20,21 @@ parent = [i for i in range(N+1)]
 
 for _ in range(M):
     a, b, c = map(int, input().split())
-    edges.append((c, a, b))  # 비용 기준으로 정렬하기 위해 순서 변경
+    edges.append((a, b, c))
 
-edges.sort()
+edges.sort(key=lambda x: x[2])
+
 result = 0
+count = 0
 max_edge = 0
-
-for c, a, b in edges:
+for edge in edges:
+    a, b, c = edge
     if find(parent, a) != find(parent, b):
-        union(parent, a, b)
         result += c
+        count += 1
+        union(parent, a, b)
         max_edge = max(max_edge, c)
+        if count == N-1:
+            break
 
 print(result - max_edge)
