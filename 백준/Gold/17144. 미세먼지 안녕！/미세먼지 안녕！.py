@@ -5,7 +5,6 @@
 # 미세먼지 확산 -> BFS
 
 import sys
-import copy
 from collections import deque
 
 input = sys.stdin.readline
@@ -24,16 +23,15 @@ for i in range(R):
 bottom = top + 1
         
 def move(graph): # 먼지 확산: 시간복잡도 O(RC)
-    tmp = copy.deepcopy(graph)
     q = deque()
     
     for i in range(R):
         for j in range(C):
-            if graph[i][j] > 0:
-                q.append((i,j))
+            if graph[i][j] >= 5:
+                q.append((i, j, graph[i][j]))
     
     while q:
-        x, y = q.popleft()
+        x, y, V = q.popleft()
         
         count = 0
         for i in range(4):
@@ -43,9 +41,8 @@ def move(graph): # 먼지 확산: 시간복잡도 O(RC)
             if graph[cx][cy] == -1:
                 continue
             count += 1
-            tmp[cx][cy] += graph[x][y] // 5
-        tmp[x][y] -= count * (graph[x][y] // 5)
-    return tmp
+            graph[cx][cy] += V // 5
+        graph[x][y] -= count * (V // 5)
 
 def operate_clean(graph, top, bottom): #공기청정기 작동
     # 위쪽 반시계 방향 회전
@@ -73,7 +70,7 @@ def operate_clean(graph, top, bottom): #공기청정기 작동
         
         
 for time in range(T):
-    graph = move(graph)
+    move(graph)
     operate_clean(graph, top, bottom)
 
 output = 2
