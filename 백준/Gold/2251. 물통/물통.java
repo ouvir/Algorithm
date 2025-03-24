@@ -17,7 +17,7 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
 
         Queue<int[]> q = new ArrayDeque<>();
-        List<Integer> output = new ArrayList<>();
+        boolean[] output = new boolean[C+1];
 
         visited = new boolean[A+1][B+1][C+1];
         visited[0][0][C] = true;
@@ -30,7 +30,7 @@ public class Main {
             int c = cur[2];
 
             if(a == 0) {
-                output.add(c);
+                output[c] = true;
             }
             if(a != 0) {
                 // 빈칸 계산
@@ -94,10 +94,10 @@ public class Main {
             }
         }
 
-        output.sort(Integer::compareTo);
-
-        for(int i = 0; i < output.size(); i++) {
-            sb.append(output.get(i)).append(" ");
+        for(int i = 0; i < C+1; i++) {
+            if(output[i]) {
+                sb.append(i).append(" ");
+            }
         }
         System.out.println(sb);
     }
