@@ -1,24 +1,27 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 public class Main {
-	public static void main(String[] args) throws Exception {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int N = Integer.parseInt(br.readLine());
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        int N = Integer.parseInt(br.readLine());
 
-		int[] graph = new int[N];
+        int[] count = new int[500001];
 
-		for (int i = 0; i < N; i++) {
-			graph[i] = Integer.parseInt(br.readLine());
-		}
+        for (int i = 0; i < N; i++) {
+            count[Integer.parseInt(br.readLine())]++;
+        }
 
-		Arrays.sort(graph);
+        long output = 0;
+        int rank = 1;
 
-		long output = 0;
-		for (int i = 1; i <= N; i++) {
-			output += Math.abs(i - graph[i - 1]);
-		}
-		System.out.println(output);
-	}
+        for (int i = 1; i <= 500000; i++) {
+            while(count[i] > 0) {
+                output += Math.abs(rank - i);
+                count[i]--;
+                rank++;
+            }
+        }
+        System.out.println(output);
+    }
 }
