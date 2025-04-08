@@ -1,10 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.StringTokenizer;
 
 public class Main {
@@ -20,14 +17,12 @@ public class Main {
 		int[] nums = new int[N]; 
 		int[] LIS = new int[N]; // 이분 탐색용 배열
 		int[] IDX = new int[N]; // 역추적용 배열
-		Map<Integer, Integer> valueA = new HashMap<>();
 		
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			count[a] = b;
-			valueA.put(b, a);
+			count[b] = a;
 		}
 		
 		int c = 0;
@@ -50,22 +45,17 @@ public class Main {
 			IDX[i] = pos;
 		}
 		
+		sb.append(N-size).append("\n");
+
 		c = size - 1;
-		ArrayDeque<Integer> target = new ArrayDeque<>();
-		
 		for (int i = N-1; i >= 0; i--) {
 			if(IDX[i] == c) {
 				c--;
 			} else {
-				target.addFirst(valueA.get(nums[i]));
+				sb.append(nums[i]).append("\n");
 			}
 		}
 		
-		sb.append(N-size).append("\n");
-		
-		for (int t : target) {
-			sb.append(t).append("\n");
-		}
 		System.out.print(sb);
 	}
 }
