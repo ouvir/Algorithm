@@ -1,17 +1,14 @@
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class Main {
-    private static final int[] dx = new int[] {1, 0, -1, 0};
-    private static final int[] dy = new int[] {0, 1, 0, -1};
-    private static int N;
-    private static int M;
-
-    private static char[][] graph;
+    private static int N, M;
+    private static boolean[][] graph;
     private static boolean[][][] visited;
+    private static final int[] dx = {1, 0, -1, 0};
+    private static final int[] dy = {0, 1, 0, -1};
+    private static final int INF = Integer.MAX_VALUE / 10;
 
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -20,49 +17,50 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
 
-        graph = new char[N][M];
-        visited = new boolean[N][M][2];
+        graph = new boolean[N][M];
+        visited = new boolean[N][M][2]; // 0~1 부수기 사용 개수
 
         for (int i = 0; i < N; i++) {
-            String line  = br.readLine();
+            String line = br.readLine();
             for (int j = 0; j < M; j++) {
-                graph[i][j] = line.charAt(j);
+                if (line.charAt(j) == '1') graph[i][j] = true;
             }
         }
 
         int output = -1;
 
-        Queue<int[]> q = new LinkedList<>();
-        q.add(new int[] {0, 0, 1, 1}); // x, y, distance, break
+        Queue<int[]> q = new ArrayDeque<>();
+        q.add(new int[]{0, 0, 1, 1}); // x, y, moveCount, remainBreakCount
         visited[0][0][1] = true;
-        visited[0][0][0] = true;
 
         while (!q.isEmpty()) {
-            int[] pos = q.poll();
-            int x = pos[0];
-            int y = pos[1];
-            int d = pos[2];
-            int b = pos[3];
+            int[] cur = q.poll();
 
-            if(x == N-1 && y == M-1) {
-                output = d;
+            if (cur[0] == N - 1 && cur[1] == M - 1) {
+                output = cur[2];
                 break;
             }
-            for (int i = 0; i < 4; i++) {
-                int mx = x + dx[i];
-                int my = y + dy[i];
 
-                if(mx < 0 || mx >= N || my < 0 || my >= M) continue;
-                if(graph[mx][my] == '1' && b >= 1 && !visited[mx][my][b-1]) {
-                    visited[mx][my][b-1] = true;
-                    q.add(new int[] {mx, my, d + 1, b-1});
+            for (int d = 0; d < 4; d++) {
+                int nx = cur[0] + dx[d];
+                int ny = cur[1] + dy[d];
+
+                if (nx < 0 || nx >= N || ny < 0 || ny >= M) continue;
+
+                if (cur[3] >= 1 && graph[nx][ny]) {
+                    if (visited[nx][ny][cur[3] - 1]) continue;
+                    q.add(new int[]{nx, ny, cur[2] + 1, cur[3] - 1});
+                    visited[nx][ny][cur[3] - 1] = true;
+                } else {
+                    if (graph[nx][ny]) continue;
+                    if (visited[nx][ny][cur[3]]) continue;
+                    q.add(new int[]{nx, ny, cur[2] + 1, cur[3]});
+                    visited[nx][ny][cur[3]] = true;
                 }
-                if(graph[mx][my] == '1' || visited[mx][my][b]) continue;
-                visited[mx][my][b] = true;
-                q.add(new int[] {mx, my, d + 1, b});
             }
         }
-
         System.out.println(output);
     }
+
+
 }
