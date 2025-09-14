@@ -1,24 +1,55 @@
 import java.util.*;
 
 class Solution {
+    private static final int MOD = 1_000_000_007;
+    private static final int INF = 1_000_000;
     public int solution(int m, int n, int[][] puddles) {
-        boolean[][] graph = new boolean[n][m];
-        int[][] count = new int[n][m];
-        count[0][0] = 1;
-        
-        for(int[] puddle: puddles) {
-            graph[puddle[1]-1][puddle[0]-1] = true;
-        }
+        int[][] dp = new int[m+1][n+1];
+        int[][] caseDP = new int[m+1][n+1];
         
         
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < m; j++) {
-                if(graph[i][j]) continue;
-                if(i-1 >= 0) count[i][j] = (count[i][j] + count[i-1][j]) % 1_000_000_007;
-                if(j-1 >= 0) count[i][j] = (count[i][j] + count[i][j-1]) % 1_000_000_007;
+        for(int i = 0; i <= m; i++) {
+            for(int j = 0; j <= n; j++) {
+                dp[i][j] = INF;
             }
         }
         
-        return count[n-1][m-1];
+        dp[1][1] = 0;
+        caseDP[1][1] = 1;
+        
+        for(int[] puddle: puddles) {
+            caseDP[puddle[0]][puddle[1]] = -1;
+        }
+        
+        
+        for(int i = 1; i <= m; i++) {
+            for(int j = 1; j <= n; j++) {
+                if(caseDP[i][j] < 0) continue;
+                // 최단 거리인지 확인
+                // 위쪽 더하기
+                if(dp[i][j] >= dp[i][j-1] + 1 && caseDP[i][j-1] >= 0) {
+                    if(dp[i][j] == dp[i][j-1] + 1) {
+                        caseDP[i][j] += caseDP[i][j-1];
+                        caseDP[i][j] %= MOD;
+                    } else {
+                        dp[i][j] = dp[i][j-1] + 1;
+                        caseDP[i][j] = caseDP[i][j-1];
+                    }
+                }
+                // 아래쪽 더하기
+                if(dp[i][j] >= dp[i-1][j] + 1 && caseDP[i-1][j] >= 0) {       
+                    if(dp[i][j] == dp[i-1][j] + 1) {
+                        caseDP[i][j] += caseDP[i-1][j];
+                        caseDP[i][j] %= MOD;
+                    } else {
+                        dp[i][j] = dp[i-1][j] + 1;
+                        caseDP[i][j] = caseDP[i-1][j];
+                    }
+                }
+            }
+        }
+                
+        if(caseDP[m][n] < 0) return 0;
+        return caseDP[m][n];
     }
 }
